@@ -45,6 +45,7 @@ class StockServiceTest {
         assertThat(stock.getQuantity()).isEqualTo(99);
     }
 
+
     @DisplayName("동시에 재고감소 요청이 100개가 온다면")
     @Test
     void decrease100() throws InterruptedException {
