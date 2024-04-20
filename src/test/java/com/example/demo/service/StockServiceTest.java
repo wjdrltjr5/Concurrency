@@ -9,7 +9,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.linesOf;
 import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class StockServiceTest {
@@ -38,5 +43,30 @@ class StockServiceTest {
         //then
         Stock stock = stockRepository.findById(1L).orElseThrow();
         assertThat(stock.getQuantity()).isEqualTo(99);
+    }
+
+    @DisplayName("동시에 재고감소 요청이 100개가 온다면")
+    @Test
+    void decrease100() throws InterruptedException {
+        //given
+        int threadCount = 100;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch countDownLatch = new CountDownLatch(threadCount);
+        //when
+        for(int i = 0; i < threadCount; i++){
+            executorService.submit(() ->{
+                try{
+                    stockService.decrease(1L, 1L);
+                }finally {
+                    countDownLatch.countDown();
+                }
+            });
+        }
+
+        countDownLatch.await();
+        Stock stock = stockRepository.findById(1L).orElseThrow();
+        //then
+        //실패하는 테스트 왜와이? -> 레이스 컨디션(경쟁상태 발생)
+        assertThat(stock.getQuantity()).isZero();
     }
 }
