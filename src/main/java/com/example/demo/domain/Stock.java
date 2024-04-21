@@ -3,14 +3,17 @@ package com.example.demo.domain;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Stock {
 
     @Id
@@ -21,11 +24,8 @@ public class Stock {
 
     private Long quantity;
 
-    public Stock(Long id, Long productId, Long quantity) {
-        this.id = id;
-        this.productId = productId;
-        this.quantity = quantity;
-    }
+    @Version
+    private Long version;
 
     public void decrease(Long quantity){
         if(this.quantity - quantity < 0){
