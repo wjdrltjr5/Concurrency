@@ -2,7 +2,6 @@ package com.example.demo.facade;
 
 import com.example.demo.service.OptimisticLockStockService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 // 실패시 재시도하는 클래스
 @Component

@@ -2,6 +2,7 @@ package com.example.demo.facade;
 
 import com.example.demo.domain.Stock;
 import com.example.demo.repository.StockRepository;
+import com.example.demo.service.PessimisticLockStockService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,19 +16,17 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
-class OptimisticLockStockFacadeTest {
+class NamedLockStockFacadeTest {
     @Autowired
-    private OptimisticLockStockFacade optimisticLockStockFacade;
+    private NamedLockStockFacade stockService;
     @Autowired
     private StockRepository stockRepository;
 
     @BeforeEach
     void before(){
-        stockRepository.save(Stock.builder()
-                .id(1L)
-                .quantity(100L)
-                .version(1L)
-                .build());
+        Stock build = Stock.builder().id(1L).quantity(100L)
+                .version(1L).build();
+        stockRepository.save(build);
     }
 
     @AfterEach
@@ -46,10 +45,8 @@ class OptimisticLockStockFacadeTest {
         for(int i = 0; i < threadCount; i++){
             executorService.submit(() ->{
                 try{
-                    optimisticLockStockFacade.decrease(1L, 1L);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                } finally {
+                    stockService.decrease(1L, 1L);
+                }finally {
                     countDownLatch.countDown();
                 }
             });
@@ -60,6 +57,6 @@ class OptimisticLockStockFacadeTest {
         //then
         //실패하는 테스트 왜와이? -> 레이스 컨디션(경쟁상태 발생)
         assertThat(stock.getQuantity()).isZero();
-        System.out.println("version 번호" + stock.getVersion());
     }
 }
+
