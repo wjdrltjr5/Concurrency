@@ -32,4 +32,5 @@ version전용 컬럼 만들고 version어노테이션 붙임
   - setnx 명령어를 활용하여 분산락 구현 (Named lock과 비슷 단 session관리 신경 안써도 됨)
   - spin lock방식
 - Redisson
-  - pub-sub 기반으로 Lock 구현 제공
+  - pub-sub(발행 구독) 기반으로 Lock 구현 제공
+  - 레디스 부하적음, 구현이 조금 복잡, 별도의 라이브러리 필요
