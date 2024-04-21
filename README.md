@@ -26,3 +26,10 @@ version전용 컬럼 만들고 version어노테이션 붙임
 ---
 - 오프라인 선점 잠금
   
+
+## Redis
+- Lettuce
+  - setnx 명령어를 활용하여 분산락 구현 (Named lock과 비슷 단 session관리 신경 안써도 됨)
+  - spin lock방식
+- Redisson
+  - pub-sub 기반으로 Lock 구현 제공
