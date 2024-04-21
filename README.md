@@ -30,7 +30,13 @@ version전용 컬럼 만들고 version어노테이션 붙임
 ## Redis
 - Lettuce
   - setnx 명령어를 활용하여 분산락 구현 (Named lock과 비슷 단 session관리 신경 안써도 됨)
-  - spin lock방식
+  - spin lock방식 -> 동시에 많은 스레드가 lock획득 대기 상태라면 redis에 부하가 감
+  - 구현 간단
+  - 별도의 라이브러리 필요x
 - Redisson
   - pub-sub(발행 구독) 기반으로 Lock 구현 제공
+  - 락 획득 재시도를 기본으로
   - 레디스 부하적음, 구현이 조금 복잡, 별도의 라이브러리 필요
+- 실무에서는?
+  - 재시도가 필요하지 않은 Lock은 Lettuce
+  - 재시도가 필요한 경우에는 Redisson 활용
